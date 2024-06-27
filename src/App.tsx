@@ -1,24 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { SearchBox } from "./search-box";
+import "./App.css";
+import { ListBox } from "./search-box/list-box";
 
 function App() {
+  const transformData = (data: any) => data.results;
+
+  const dataPromise = async (query: string, signal: any) =>
+    await fetch(`https://swapi.dev/api/people/?search=${query}`, { signal });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="wrapper">
+      <SearchBox
+        id="personName"
+        name="personName"
+        label="Enter Person name"
+        placeholder="Enter your fav star war char"
+        autoComplete={true}
+        maxItems={5}
+        styles={{
+          label: "label",
+          input: "input",
+        }}
+        debounceWait={1000}
+        listBox={(items: any[], activeIndex: number) => (
+          <ListBox items={items} activeIndex={activeIndex} />
+        )}
+        noItemsMessage={() => <div>Something went wrong</div>}
+        transformData={transformData}
+        promise={dataPromise}
+      />
     </div>
   );
 }
